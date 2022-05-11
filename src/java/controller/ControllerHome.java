@@ -81,6 +81,7 @@ public class ControllerHome extends HttpServlet {
             Vector<String> listType = new DAOSuppliers().top5Country();
             request.setAttribute("type", listType);
             
+            // This is request dispath
             RequestDispatcher dispath = request.getRequestDispatcher("/JSP/Shop.jsp");
             dispath.forward(request, response);
         }
