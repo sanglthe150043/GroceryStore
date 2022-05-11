@@ -7,6 +7,7 @@
 <%@page import="entity.Customers"%>
 <%@page import="entity.Products"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -14,7 +15,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Responsive Bootstrap4 Shop Template, Created by Imran Hossain from https://imransdesign.com/">
-
         <!-- title -->
         <title>Cart</title>
 
@@ -69,13 +69,15 @@
                             <nav class="main-menu">
                                 <ul>
                                     <li ><a href="ControllerHome">Home</a></li>
-                                        <%if (session.getAttribute("user") != null) {%>
+                                    <c:choose>
+                                    <c:when test="${user}!=null">
                                     <li><a href="ControllerLogin?do=logoutC">LogOut</a></li>
-                                        <%} else {%>
-
+                                    </c:when>
+                                    <c:otherwise>
                                     <li><a href="ControllerLogin?do=loginC" >LogIn</a></li>
                                     <li><a href="ControllerLogin?do=registerC">Register</a></li>
-                                        <%}%>                                
+                                    </c:otherwise>
+                                    </c:choose>
                                     <li><a href="ControllerHome">Shop</a></li>
                                     <li>
                                         <div class="header-icons">
