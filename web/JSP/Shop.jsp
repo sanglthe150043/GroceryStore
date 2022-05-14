@@ -8,6 +8,7 @@
 <%@page import="java.util.Vector"%>
 <%@page import="java.util.List"%>
 <%@page import="entity.Products"%>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,15 +72,16 @@
                             <nav class="main-menu">
                                 <ul>
                                     <li><a href="ControllerHome">Home</a></li>
-                                        <%if (session.getAttribute("user") != null) {
-                                        Customers customer = (Customers)session.getAttribute("user");
-                                        %>
-                                    <li> <a>Welcom:<%=customer.getUsername()%></a> </li>
-                                    <li><a href="ControllerLogin?do=logoutC">LogOut</a></li>
-                                        <%} else {%>
-                                    <li><a href="ControllerLogin?do=loginC" >LogIn</a></li>
-                                    <li><a href="ControllerLogin?do=registerC">Register</a></li>
-                                        <%}%>         
+                                        <c:choose>
+                                            <c:when test="${sessionScope.user}!=null">
+                                            <li> <a>Welcom: ${sessionScope.user}</a> </li>
+                                            <li><a href="ControllerLogin?do=logoutC">LogOut</a></li>
+                                            </c:when>
+                                            <c:otherwise>
+                                            <li><a href="ControllerLogin?do=loginC" >LogIn</a></li>
+                                            <li><a href="ControllerLogin?do=registerC">Register</a></li>
+                                            </c:otherwise>
+                                        </c:choose>
                                     <li>
                                         <div class="header-icons">
                                             <a class="shopping-cart" href="ControllerCart?do=" ><i class="fas fa-shopping-cart"></i></a>
@@ -143,34 +145,39 @@
                     <div class="col-md-12">
                         <div class="product-filters">
                             <ul>
-                                <li class="<%=service.equals("all")?"active":""%>"><a href="ControllerHome">All</a></li>
-                                    <% Vector<String> type = (Vector<String>) request.getAttribute("type");
-                                        for (int i = 0; i < type.size(); i++) {%>
-                                <li class="<%=service.equals(type.get(i))?"active":""%>"><a href="ControllerHome?do=<%=type.get(i)%>"><%=type.get(i)%></a></li>
-                                    <%}%>
+
+                                <li class="<c:out value="${service.equals('all')? 'active' : ''}" />"><a href="ControllerHome">All</a></li>
+                                    <c:forEach items="${type}" var="a">
+                                    <li class="<c:out value="${service.equals(a)? 'active' : ''}" />">
+                                        <a href="ControllerHome?do=${a}"><c:out value="${a}" /></a></li>
+                                    </c:forEach>
                             </ul>
                         </div>
                     </div>
                 </div>
 
                 <div class="row product-lists">
-                    <%List<Products> products = (List<Products>) request.getAttribute("listProducts");
-                        int a=0;
-                        for (Products pro : products) {
-                            if(a!=6) a++;
-                            else a=1;
-                    %>
-                    <div class="col-lg-4 col-md-6 text-center strawberry">
-                        <div class="single-product-item">
-                            <div class="product-image">
-                                <a href="#"><img src="assets/img/products/product-img-<%=a%>.jpg" alt=""></a>
+                    <c:set var="a=" value="0" />
+                    <c:forEach items="${listProducts}" var="c">
+                        <c:choose>
+                            <c:when test="${a!=6}">
+                                <c:set var="a" value="${a+1}"></c:set>
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="a" value="1"></c:set>
+                            </c:otherwise>
+                        </c:choose>
+                        <div class="col-lg-4 col-md-6 text-center strawberry">
+                            <div class="single-product-item">
+                                <div class="product-image">
+                                    <a href="#"><img src="assets/img/products/product-img-${a}.jpg" alt=""></a>
+                                </div>
+                                <h3><c:out value="${c.getProductName()}" /></h3>
+                                <p class="product-price"><span><c:out value="${c.getQuantityPerUnit()}" /></span><c:out value="${c.getUnitPrice()}" />$</p>
+                                <a href="ControllerCart?do=addToCart&pid=<c:out value="${c.getProductID()}" />" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
                             </div>
-                            <h3><%=pro.getProductName()%></h3>
-                            <p class="product-price"><span><%=pro.getQuantityPerUnit()%></span><%=pro.getUnitPrice()%>$</p>
-                            <a href="ControllerCart?do=addToCart&pid=<%=pro.getProductID()%>" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
                         </div>
-                    </div>
-                    <%}%>
+                    </c:forEach>
                 </div>
 
                 <div class="row">
@@ -184,12 +191,29 @@
                                 <li><a href="ControllerHome">Prev</a></li> 
                                     <%}%>
                                     <%for (int i = 1; i <= size; i++) {%>
-                                <li><a class="<%= index == i ? "active" : ""%>" href="ControllerHome?do=<%=service!=null ? service : "all"%>&page=<%=i%>"><%=i%></a></li>
+                                <li><a class="<%= index == i ? "active" : ""%>" href="ControllerHome?do=<%=service != null ? service : "all"%>&page=<%=i%>"><%=i%></a></li>
                                     <%}%>
                                     <%if (size >= 2) {%> 
                                 <li><a href="ControllerHome">Next</a></li> 
                                     <%}
                                         }%>
+
+                                <c:choose>
+                                    <c:when test="${size>=2}">
+                                        <li><a href="ControllerHome">Prev</a></li> 
+                                            <c:forEach begin="1" end="${index}"  var="i">
+                                            <li><a class="${index == i ? "active" : ""}" href="ControllerHome?do=${service != null ? service : "all"}&page=${i}"><c:out value="${i}"/></a></li>
+                                            </c:forEach>                                
+                                        <li><a href="ControllerHome">Next</a></li> 
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:forEach begin="1" end="${index}"  var="i">
+                                            <li><a class="${index == i ? "active" : ""}" 
+                                                   href="ControllerHome?do=${service != null ? service : "all"}&page=${i}"><c:out value="${i}"/></a></li>
+                                            </c:forEach>        
+                                        </c:otherwise>
+                                    </c:choose>
+
                             </ul>
                         </div>
                     </div>

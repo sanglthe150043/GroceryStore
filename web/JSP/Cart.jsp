@@ -110,9 +110,7 @@
             </div>
         </div>
         <!-- end breadcrumb section -->
-
-        <%Customers customer = (Customers)session.getAttribute("user");
-        if(customer!=null){%>
+        <c:if test="${sessionScope.user}!=null">
         <!-- single product -->
 	<div class="single-product mt-150 mb-150">
 		<div class="container">
@@ -124,11 +122,11 @@
 				</div>
 				<div class="col-md-7">
 					<div class="single-product-content">
-						<h3>CustomerID:&ensp;<%=customer.getCustomerID()%></h3>
-						<h3>CompanyName:&ensp;<%=customer.getCompanyName()%></h3>
-                                                <h4>Address:&ensp;<%=customer.getAddress()+" "+customer.getCity()+" "+customer.getCountry()%></h4>
-						<h4>PhoneNumber:&ensp;<%=customer.getPhone()%></h4>
-						<h4>FAX:&ensp;<%=customer.getFax()%></h4>
+						<h3>CustomerID:&ensp;${sessionScope.user.getCustomerID()}</h3>
+						<h3>CompanyName:&ensp;${sessionScope.user.getCompanyName()}</h3>
+                                                <h4>Address:&ensp;${sessionScope.user.getAddress()+" "+sessionScope.user.getCity()+" "+sessionScope.user.getCountry()}</h4>
+						<h4>PhoneNumber:&ensp;${sessionScope.user.getPhone()}</h4>
+						<h4>FAX:&ensp;${sessionScope.user.getFax()}</h4>
 						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
                                                     Dicta sint dignissimos, rem commodi cum voluptatem quae 
                                                     reprehenderit repudiandae ea tempora incidunt ipsa, 
@@ -138,7 +136,8 @@
 			</div>
 		</div>
 	</div>
-        <%}%>
+                                                        </c:if>
+
         <!-- end single product -->
 
         
@@ -148,8 +147,7 @@
                 <div class="row">
                     <div class="col-lg-8 col-md-12">
                         <div class="cart-table-wrap">
-                            <%
-                                
+                            <% 
                                 try {
                                    String  ero = (String)request.getAttribute("eror");%>
                                     <h2><%=ero%></h2>
