@@ -184,36 +184,21 @@
                     <div class="col-lg-12 text-center">
                         <div class="pagination-wrap">
                             <ul>
-                                <%int size = (Integer) request.getAttribute("size"),
-                                            index = (Integer) request.getAttribute("index");
-                                    if (size > 1) {
-                                        if (size >= 2) {%>
-                                <li><a href="ControllerHome">Prev</a></li> 
-                                    <%}%>
-                                    <%for (int i = 1; i <= size; i++) {%>
-                                <li><a class="<%= index == i ? "active" : ""%>" href="ControllerHome?do=<%=service != null ? service : "all"%>&page=<%=i%>"><%=i%></a></li>
-                                    <%}%>
-                                    <%if (size >= 2) {%> 
-                                <li><a href="ControllerHome">Next</a></li> 
-                                    <%}
-                                        }%>
-
                                 <c:choose>
                                     <c:when test="${size>=2}">
                                         <li><a href="ControllerHome">Prev</a></li> 
-                                            <c:forEach begin="1" end="${index}"  var="i">
+                                            <c:forEach begin="1" end="${size}"  var="i">
                                             <li><a class="${index == i ? "active" : ""}" href="ControllerHome?do=${service != null ? service : "all"}&page=${i}"><c:out value="${i}"/></a></li>
                                             </c:forEach>                                
                                         <li><a href="ControllerHome">Next</a></li> 
                                         </c:when>
                                         <c:otherwise>
-                                            <c:forEach begin="1" end="${index}"  var="i">
+                                            <c:forEach begin="1" end="${size}"  var="i">
                                             <li><a class="${index == i ? "active" : ""}" 
                                                    href="ControllerHome?do=${service != null ? service : "all"}&page=${i}"><c:out value="${i}"/></a></li>
                                             </c:forEach>        
                                         </c:otherwise>
                                     </c:choose>
-
                             </ul>
                         </div>
                     </div>

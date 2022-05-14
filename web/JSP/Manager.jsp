@@ -11,6 +11,7 @@
 <%@page import="entity.Products"%>
 <%@page import="java.util.Vector"%>
 <%@page import="entity.Employees"%>
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <!DOCTYPE html>
@@ -70,25 +71,28 @@
                                 </a>
                             </div>
                             <!-- logo -->
-                            <%String service = (String) request.getAttribute("service");%>
                             <!-- menu start -->
                             <nav class="main-menu">
                                 <ul>
                                     <li class="current-list-item"><a href="ControllerManager?do=inforE">Home</a>
                                     </li>
-                                    <%if (session.getAttribute("admin") != null) {%>
-                                    <li><a href="ControllerLogin?do=logoutE">LogOut</a></li>
-                                        <%} else {%>
-                                    <li><a href="ControllerLogin?do=loginE" >LogIn</a></li>
-                                    <li><a href="ControllerLogin?do=registerE">Register</a></li>
-                                        <%}%>  
-                                        <%if (!service.equals("inforE")) {%>
-                                    <li><a class="mobile-hide search-bar-icon" href="#"><i class="fas fa-search"></i></a>
-                                        <!--                                        <ul class="sub-menu">
-                                                                                    <li><a  href="">Search By Name</a></li>
-                                                                                    <li><a href="">Search By ID</a></li>
-                                                                                </ul>-->
-                                    </li><%}%>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.admin!=null}">
+                                            <li><a href="ControllerLogin?do=logoutE">LogOut</a></li>        
+                                            </c:when>
+                                            <c:otherwise>
+                                            <li><a href="ControllerLogin?do=loginE" >LogIn</a></li>
+                                            <li><a href="ControllerLogin?do=registerE">Register</a></li>        
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <c:if test="${service.equals('inforE')}">
+                                        <li><a class="mobile-hide search-bar-icon" href="#"><i class="fas fa-search"></i></a>
+                                            <!--                                        <ul class="sub-menu">
+                                                                                        <li><a  href="">Search By Name</a></li>
+                                                                                        <li><a href="">Search By ID</a></li>
+                                                                                    </ul>-->
+                                        </li>    
+                                    </c:if>
                                 </ul>
                             </nav>
                             <a class="mobile-show search-bar-icon" href="#"><i class="fas fa-search"></i></a>
@@ -109,9 +113,11 @@
                         <div class="search-bar">
                             <div class="search-bar-tablecell">
                                 <form action="ControllerManager" method="post">
-                                    <input type="hidden" name="do" value="<%=service%>">
-                                        <h3><%=service.equals("managerOrders") ? "Search By CustomerID of Order"
-                                                : service.equals("managerProducts") ? "Search By Product Name" : "Search Customer Name"%></h3>
+                                    <input type="hidden" name="do" value="${service}">
+                                    <h3><c:out value="${service.equals('managerOrders')? 
+                                                    'Search By CustomerID of Order': 
+                                                    service.equals('managerProducts') ? 
+                                                    'Search By Product Name' : 'Search Customer Name'}" /></h3>
                                     <input type="text" placeholder="Name" name="name">
                                     <input type="submit" value="Search">
                                 </form> 
