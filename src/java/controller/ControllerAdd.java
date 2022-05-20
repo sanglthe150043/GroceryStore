@@ -47,7 +47,8 @@ public class ControllerAdd extends HttpServlet {
             String service = request.getParameter("do");
             if (session.getAttribute("admin") == null) {
                 response.sendRedirect("ControllerLogin?do=loginE");
-            } else {
+            } else {// Addcomment
+                
                 if (service != null && service.equals("addProduct")) {
                     DAOCategories dao1 = new DAOCategories();
                     DAOSuppliers dao2 = new DAOSuppliers();
